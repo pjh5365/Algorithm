@@ -41,6 +41,8 @@ public class Main {
 					map[s[i]][j] = arr[i][j].clone();
 				}
 			}
+			if (result == 12) // 이미 최단거리라면
+				return;
 			find(0, map);
 			return;
 		}
