@@ -24,16 +24,24 @@ public class Main {
 		if (total <= M) { // 모두 배정할 수 있다면
 			result = maxValue; // 상한액은 최대값
 		} else {
-			for (int i = 1; i < maxValue; i++) { // 1에서부터 최대값사이에서 상한액 구하기
+			int start = 1;
+			int end = maxValue;
+
+			// 이진탐색
+			while (start <= end) {
+				int mid = (start + end) / 2; // 상한액
 				int sum = 0;
-				for (int j = 0; j < N; j++) {
-					sum += Math.min(arr[j], i); // 상한액보다 작은 값으로 더하기
+
+				for (int i = 0; i < N; i++) {
+					sum += Math.min(mid, arr[i]);
 				}
-				if (sum > M) {
-					result = i - 1;
-					break;
+				if (sum <= M) { // 상한액을 더 올릴 수 있다면
+					start = mid + 1;
+				} else { // 상한액을 내려야한다면
+					end = mid - 1;
 				}
 			}
+			result = end;
 		}
 
 		bw.write(String.valueOf(result));
