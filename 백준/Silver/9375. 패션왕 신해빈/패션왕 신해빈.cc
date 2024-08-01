@@ -14,14 +14,7 @@ int main()
         for (int i = 0; i < n; i++)
         {
             cin >> tmp >> a;
-            if (m.find(a) != m.end())
-            {
-                m[a]++;
-            }
-            else
-            {
-                m[a] = 1;
-            }
+            m[a]++;
         }
         int ret = 1;
         for (auto i : m)
