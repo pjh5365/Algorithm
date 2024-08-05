@@ -2,17 +2,13 @@
 using namespace std;
 int main()
 {
-    string s;
+    string s, tmp;
     cin >> s;
+    tmp = s;
 
-    for (int i = 0; i < s.length(); i++)
-    {
-        if (s[i] != s[s.length() - 1 - i])
-        {
-            cout << '0' << '\n';
-            return 0;
-        }
-    }
-    cout << '1' << '\n';
-    return 0;
+    reverse(tmp.begin(), tmp.end());
+    if (tmp == s)
+        cout << 1 << '\n';
+    else
+        cout << 0 << '\n';
 }
