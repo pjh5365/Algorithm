@@ -1,27 +1,22 @@
 #include <bits/stdc++.h>
 using namespace std;
+int N, cnt[26];
+string s, ret;
 int main()
 {
-    int N;
-    string s;
     cin >> N;
-    unordered_map<char, int> map;
-    set<char> set;
     for (int i = 0; i < N; i++)
     {
         cin >> s;
-        map[s[0]]++;
-        set.insert(s[0]);
+        cnt[s[0] - 'a']++;
     }
-    bool check = false;
-    for (char i : set)
+    for (int i = 0; i < 26; i++)
     {
-        if (map[i] >= 5)
-        {
-            cout << i;
-            check = true;
-        }
+        if (cnt[i] >= 5)
+            ret += (i + 'a');
     }
-    if (!check)
+    if (ret.size())
+        cout << ret << '\n';
+    else
         cout << "PREDAJA" << '\n';
 }
