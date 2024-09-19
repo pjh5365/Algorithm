@@ -10,17 +10,11 @@ int main() {
 
 	cin >> N >> K;
 	cin >> num;
-
-	s1.push(num[0] - '0');
-	for (int i = 1; i < num.length(); i++) {
+	for (int i = 0; i < num.length(); i++) {
 		int now = num[i] - '0';
-		while (!s1.empty() && K > 0) {
-			if (s1.top() < now) {
-				s1.pop();
-				K--;
-			} else {
-				break;
-			}
+		while (!s1.empty() && K > 0 && s1.top() < now) {
+			s1.pop();
+			K--;
 		}
 		s1.push(now);
 	}
