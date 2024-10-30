@@ -3,9 +3,9 @@ import java.util.*;
 
 class Solution {
     public long solution(int n, int[] times) {
-        Arrays.sort(times);
-        long l = times[0];
-        long r = (long)times[times.length-1]*(long)n;
+        // Arrays.sort(times);
+        long l = 0;
+        long r = (long) (1e9 * 1e5);
         long answer = Long.MAX_VALUE;
         
         while (l <= r) {
