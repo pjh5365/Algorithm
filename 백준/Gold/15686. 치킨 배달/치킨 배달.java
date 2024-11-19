@@ -2,94 +2,79 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-
 	static int N;
 	static int M;
+	static int ret = Integer.MAX_VALUE;
 	static int[][] arr;
-	static int[][] count; // 어떤 치킨집이 얼만큼 선택되었는지 담을 배열
-	static int[][] result; // 계산한 값을 가지고 있을 배열
-	static int[] index;
-	static boolean[] use;
-	static int MIN = Integer.MAX_VALUE;
-	static ArrayList<Pair> house = new ArrayList<>(); // 집의 위치를 담을 리스트
-	static ArrayList<Pair> chicken = new ArrayList<>(); // 집의 위치를 담을 리스트
+	static int[] find;
+	static boolean[] visited;
+	static ArrayList<Pair> home = new ArrayList<>();
+	static ArrayList<Pair> chicken = new ArrayList<>();
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
-
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
+
 		arr = new int[N][N];
-		count = new int[N][N];
-		result = new int[N][N];
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < N; j++) {
 				arr[i][j] = Integer.parseInt(st.nextToken());
-				if (arr[i][j] == 1) // 집이라면 저장
-					house.add(new Pair(i, j));
-				else if (arr[i][j] == 2) // 치킨집 저장
+				if (arr[i][j] == 2) {
 					chicken.add(new Pair(i, j));
+				} else if (arr[i][j] == 1) {
+					home.add(new Pair(i, j));
+				}
 			}
 		}
-		index = new int[M];
-		use = new boolean[chicken.size()];
+		find = new int[M];
+		visited = new boolean[chicken.size()];
 		backtracking(0);
 
-		bw.write(String.valueOf(MIN));
+		bw.write(String.valueOf(ret));
 		bw.flush();
 	}
-	// 치킨집의 조합을 뽑아서 계산하는 백트래킹을 사용하면?
 
 	static void backtracking(int k) {
 		if (k == M) {
-			int sum = 0;
-			result = new int[N][N];
-			for (int i = 0; i < k; i++) {
-				Pair get = chicken.get(index[i]);
-				find(get); // 확인한 후
-			}
-
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					if (arr[i][j] == 1)
-						sum += result[i][j];
+			int[][] map = new int[N][N];
+			int max = 0;
+			// 모든 집에서 모든 치킨집을 확인해서 가장 가까운 치킨집으로 갱신하고 모든 계산이 완료된 후 최대값이 현재 뽑은 치킨집의 최소거리임
+			for (int i : find) {
+				Pair get = chicken.get(i);
+				for (Pair home : home) {
+					int tmp = Math.abs(get.x - home.x) + Math.abs(get.y - home.y);
+					if (map[home.x][home.y] == 0) {
+						map[home.x][home.y] = tmp;
+					} else {
+						map[home.x][home.y] = Math.min(tmp, map[home.x][home.y]);
+					}
 				}
 			}
-			MIN = Math.min(MIN, sum);
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					max += map[i][j];
+				}
+			}
+			ret = Math.min(ret, max);
 			return;
 		}
 
 		int start = 0;
-		if (k > 0)
-			start = index[k - 1];
-
-		for (int i = start; i < chicken.size(); i++) {
-			if (!use[i]) {
-				use[i] = true;
-				index[k] = i;
-				backtracking(k + 1);
-				use[i] = false;
-			}
+		if (k > 0) {
+			start = find[k - 1];
 		}
-	}
-
-	static void find(Pair chicken) {
-		int houseCount = house.size(); // 집의 개수
-		while (houseCount != 0) {
-			Pair get = house.remove(0);
-			int dist = Math.abs(get.x - chicken.x) + Math.abs(get.y - chicken.y);
-			if (result[get.x][get.y] != 0) // 첫 탐색이 아닐 경우
-				result[get.x][get.y] = Math.min(dist, result[get.x][get.y]); // 집의 최소값 갱신
-			else // 첫 탐색이라면
-				result[get.x][get.y] = dist;
-
-			result[chicken.x][chicken.y] += dist; // 치킨집 거리 총합에 추가
-			house.add(get);
-			houseCount--;
+		for (int i = start; i < chicken.size(); i++) {
+			if (!visited[i]) {
+				visited[i] = true;
+				find[k] = i;
+				backtracking(k + 1);
+				visited[i] = false;
+			}
 		}
 	}
 
