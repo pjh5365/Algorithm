@@ -3,7 +3,10 @@ import java.util.*;
 
 public class Main {
 	/**
-	 *
+	 * 1. 모든 자리를 좌석 높이를 더해서 입력을 받는다.
+	 * 2. 한 행을 입력받았다면 정렬한다.
+	 * 3. 첫번째 열부터 N - 1 번째 열까지 탐색을 하면서 나보다 크지만 그 중 가장 작은 자리가 있는지 확인한다.
+	 * 4. 모든 자리가 적절히 배치되었다면 다음 라인으로 넘어간다. 만약 적절히 배치되지 않았다면 바로 종료한다.
 	 */
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
