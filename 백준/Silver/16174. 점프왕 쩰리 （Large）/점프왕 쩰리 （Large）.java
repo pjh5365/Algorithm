@@ -17,6 +17,8 @@ public class Main {
 		N = Integer.parseInt(br.readLine());
 		arr = new int[N][N];
 		visited = new boolean[N][N];
+		
+		String ret;
 
 		for (int i = 0; i < N; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
@@ -25,17 +27,19 @@ public class Main {
 			}
 		}
 
-		dfs(0, 0);
-		bw.write("Hing");
+		if (dfs(0, 0)) {
+			ret = "HaruHaru";
+		} else {
+			ret = "Hing";
+		}
+		bw.write(ret);
 		bw.flush();
 	}
 
-	static void dfs(int x, int y) {
-		boolean ret = false;
+	static boolean dfs(int x, int y) {
 		visited[x][y] = true;
 		if (arr[x][y] == -1) {
-			System.out.println("HaruHaru");
-			System.exit(0);
+			return true;
 		}
 		for (int i = 0; i < 2; i++) {
 			int X = x + dx[i] * arr[x][y];
@@ -44,7 +48,10 @@ public class Main {
 			if (X < 0 || Y < 0 || X >= N || Y >= N || visited[X][Y]) {
 				continue;
 			}
-			dfs(X, Y);
+			if (dfs(X, Y)) {
+				return true;
+			}
 		}
+		return false;
 	}
 }
