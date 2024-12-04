@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Main {
 	/**
-	 * 문자열의 길이는 최대 1000이니 완전탐색으로 풀기
+     * 문자열의 길이는 최대 1000이니 시간초과 걱정없이 풀기
 	 * P를 0, S의 길이까지 자르고 해당 문자열이 S에 존재하는지 확인 있다면 횟수 증가 없다면 S의 길이 - i 를 반복하면서 존재하는지 확인하기
 	 */
 	public static void main(String[] args) throws Exception {
