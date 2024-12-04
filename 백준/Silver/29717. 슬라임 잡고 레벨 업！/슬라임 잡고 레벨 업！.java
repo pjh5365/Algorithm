@@ -4,6 +4,7 @@ import java.util.*;
 public class Main {
 	/**
 	 * 등차수열의 합을 이용해서 경험치의 총량을 구하고 이분탐색으로 레벨 탐색하기
+	 * 레벨업에 필요한 경험치는 long 타입 사용하기
 	 */
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,11 +18,11 @@ public class Main {
 			long exp = (long)N * (2 + (N - 1)) / 2; // N 마리까지 처치하고 얻은 경험치 총량
 
 			long ret  = 1;
-			long left = 1;
-			long right = N; // 최대 레벨은 N
+			int left = 1;
+			int right = N; // 최대 레벨은 N
 			while (left <= right) {
-				long mid = (left + right) / 2;
-				long levelExp = mid * (4 + (mid - 1) * 2) / 2;
+				int mid = (left + right) / 2;
+				long levelExp = mid * (4 + (mid - 1) * 2L) / 2;
 
 				if (levelExp < exp) {
 					left = mid + 1;
