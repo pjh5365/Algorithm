@@ -9,7 +9,7 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-		Set<Double> s = new HashSet<>();
+		Set<Pair> s = new HashSet<>();
 
 		int N = Integer.parseInt(br.readLine());
 
@@ -17,10 +17,41 @@ public class Main {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int x = Integer.parseInt(st.nextToken());
 			int y = Integer.parseInt(st.nextToken());
-			double tmp = (double)x / y;
-			s.add(tmp);
+			int posX = (x < 0 ? -x : x), posY = (y < 0 ? -y : y);
+			int gcd = posX > posY ? gcd(posX, posY) : gcd(posY, posX);
+			s.add(new Pair(x / gcd, y / gcd));
 		}
 		bw.write(String.valueOf(s.size()));
 		bw.flush();
+	}
+
+	static int gcd(int a, int b) {
+		if (b == 0) {
+			return a;
+		}
+		return gcd(b, a % b);
+	}
+
+	static class Pair {
+		int x;
+		int y;
+
+		public Pair(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o == null || getClass() != o.getClass())
+				return false;
+			Pair pair = (Pair)o;
+			return x == pair.x && y == pair.y;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(x, y);
+		}
 	}
 }
