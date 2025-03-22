@@ -10,15 +10,21 @@ public class Main {
         int M = Integer.parseInt(br.readLine());
         String s = br.readLine();
 
-        StringBuilder P = new StringBuilder("IOI");
-        for (int i = 1; i < N; i++) {
-            P.append("OI");
-        }
-        String Pn = P.toString();
+        int cnt = 0;
         int ret = 0;
-        for (int i = 0; i <= M - Pn.length(); i++) {
-            if (s.startsWith(Pn, i)) {
-                ret++;
+        for (int i = 1; i <= M - 1;) {
+            if (s.startsWith("OI", i)) {
+                cnt++;
+                if (cnt == N) {
+                    if (s.charAt(i - (cnt * 2 - 1)) == 'I') {
+                        ret++;
+                    }
+                    cnt--;
+                }
+                i += 2;
+            } else {
+                cnt = 0;
+                i++;
             }
         }
         bw.write(String.valueOf(ret));
