@@ -2,33 +2,43 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-		int N = Integer.parseInt(br.readLine());
-		int result = 0;
-		for (int i = 0; i < N; i++) {
-			String input = br.readLine();
-			Stack<Character> s = new Stack<>();
-			if (input.length() % 2 != 0) {
-				continue;
-			}
-			for (int j = 0; j < input.length(); j++) {
-				if (!s.isEmpty() && s.peek() != input.charAt(j)) {
-					s.push(input.charAt(j));
-				} else if (!s.isEmpty() && s.peek() == input.charAt(j)) {
-					s.pop();
-				} else {
-					s.push(input.charAt(j));
-				}
-			}
-			if (s.isEmpty()) {
-				result++;
-			}
-		}
+        int ret = 0;
+        int N = Integer.parseInt(br.readLine());
+        while (N-- > 0) {
+            String s = br.readLine();
+            StringBuilder sb = new StringBuilder();
 
-		bw.write(String.valueOf(result));
-		bw.flush();
-	}
+            if (s.length() % 2 != 0) {
+                continue;
+            }
+
+            Stack<Character> stack = new Stack<>();
+            for (int i = 0; i < s.length(); i++) {
+                if (!stack.isEmpty()) {
+                    if (stack.peek() == s.charAt(i)) {
+                        stack.pop();
+                        continue;
+                    }
+                }
+                stack.push(s.charAt(i));
+            }
+            while (!stack.isEmpty()) {
+                sb.append(stack.pop());
+            }
+
+            String s1 = String.valueOf(sb.reverse());
+            String s2 = String.valueOf(sb.reverse());
+
+            if (sb.length() == 0 || s1.equals(s2)) {
+                ret++;
+            }
+        }
+
+        bw.write(String.valueOf(ret));
+        bw.flush();
+    }
 }
