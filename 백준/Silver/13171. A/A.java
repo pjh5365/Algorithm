@@ -14,9 +14,6 @@ public class Main {
     }
 
     static long find(long A, long X) {
-        if (X == 0) {
-            return 1;
-        }
         if (X == 1) {
             return A % 1000000007;
         }
