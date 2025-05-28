@@ -2,80 +2,67 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		StringBuilder sb = new StringBuilder();
+    static int[] dx = {0, 0, -1, 1};
+    static int[] dy = {-1, 1, 0, 0};
+    static ArrayList<Integer> list = new ArrayList<>();
+    static int size = 0;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int M = Integer.parseInt(st.nextToken());
-		int N = Integer.parseInt(st.nextToken());
-		int K = Integer.parseInt(st.nextToken());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int M = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+        int[][] map = new int[M][N];
+        for (int i = 0; i < K; i++) {
+            st = new StringTokenizer(br.readLine());
+            int y1 = Integer.parseInt(st.nextToken());
+            int x1 = Integer.parseInt(st.nextToken());
+            int y2 = Integer.parseInt(st.nextToken());
+            int x2 = Integer.parseInt(st.nextToken());
 
-		int[][] arr = new int[M][N];
-		int[] checkX = {0, 0, 1, -1};
-		int[] checkY = {1, -1, 0, 0};
-		int index = -1;
-		int[] size = new int[100];
-		Queue<Pair> q = new LinkedList<>();
+            for (int j = x1; j < x2; j++) {
+                for (int k = y1; k < y2; k++) {
+                    map[j][k] = -1;
+                }
+            }
+        }
 
-		for (int i = 0; i < K; i++) {
-			st = new StringTokenizer(br.readLine());
-			int x1 = Integer.parseInt(st.nextToken());
-			int y1 = Integer.parseInt(st.nextToken());
-			int x2 = Integer.parseInt(st.nextToken());
-			int y2 = Integer.parseInt(st.nextToken());
+        int ret = 0;
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                if (map[i][j] == 0) {
+                    ret++;
+                    size = 0;
+                    dfs(i, j, ret, map, M, N);
+                    list.add(size);
+                }
+            }
+        }
+        Collections.sort(list);
+        bw.write(ret + "\n");
+        for (int i : list) {
+            bw.write(i + " ");
+        }
+        bw.flush();
+    }
 
-			for (int j = y1; j < y2; j++) {
-				for (int k = x1; k < x2; k++) {
-					arr[j][k] = 1;
-				}
-			}
-		}
+    static void dfs(int x, int y, int cnt, int[][] map, int M, int N) {
+        map[x][y] = cnt;
+        size++;
 
-		for (int i = 0; i < M; i++) {
-			for (int j = 0; j < N; j++) {
-				if (arr[i][j] == 0) {
-					index++;
-					arr[i][j] = 1;
-					q.add(new Pair(j, i));
-					size[index]++;
-					while (!q.isEmpty()) {
-						Pair now = q.poll();
-						for (int k = 0; k < 4; k++) {
-							int x = now.x + checkX[k];
-							int y = now.y + checkY[k];
+        for (int i = 0; i < 4; i++) {
+            int X = x + dx[i];
+            int Y = y + dy[i];
 
-							if (x < 0 || x >= N || y < 0 || y >= M)
-								continue;
+            if (X < 0 || X > M - 1 || Y < 0 || Y > N - 1) {
+                continue;
+            }
 
-							if (arr[y][x] == 0) {
-								arr[y][x] = 1;
-								size[index]++;
-								q.add(new Pair(x, y));
-							}
-						}
-					}
-				}
-			}
-		}
-
-		Arrays.sort(size, 0, index + 1);
-		sb.append(index + 1).append("\n");
-		for (int i = 0; i < index + 1; i++)
-			sb.append(size[i]).append(" ");
-
-		bw.write(String.valueOf(sb));
-		bw.flush();
-	}
-
-	static class Pair {
-		int x;
-		int y;
-
-		public Pair(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-	}
+            if (map[X][Y] == 0) {
+                dfs(X, Y, cnt, map, M, N);
+            }
+        }
+    }
 }
