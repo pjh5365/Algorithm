@@ -2,56 +2,55 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringBuilder sb = new StringBuilder();
 
-		StringBuilder sb = new StringBuilder();
+        Set<Character> set = new HashSet<>(List.of('a', 'e', 'i', 'o', 'u'));
 
-		while (true) {
-			String s = br.readLine();
-			if (s.equals("end")) {
-				break;
-			}
+        while (true) {
+            String s = br.readLine();
+            if (s.equals("end")) {
+                break;
+            }
 
-			boolean one = false;
-			boolean three = true;
-			int count1 = 0;
-			int count2 = 0;
+            int cnt1 = 0;
+            int cnt2 = 0;
+            boolean flag1 = false;
+            boolean flag2 = true;
+            boolean flag3 = true;
+            for (int i = 0; i < s.length(); i++) {
+                if (set.contains(s.charAt(i))) {
+                    flag1 = true;
+                    cnt1++;
+                    cnt2 = 0;
+                } else {
+                    cnt1 = 0;
+                    cnt2++;
+                }
 
-			for (int i = 0; i < s.length(); i++) {
-				char now = s.charAt(i);
-				if (now == 'a' || now == 'e' || now == 'i' || now == 'o' || now == 'u') { // 모음일때
-					one = true;
-					count2 = 0; // 자음 0으로 초기화
-					count1++; // 모음 카운트++
-					if (i >= 1 && (now == s.charAt(i - 1))) { // 같은 글자가 연속이라면
-						three = false;
-						if (now == 'e' || now == 'o') { // ee, oo는 허용
-							three = true;
-						}
-					}
-				} else { // 자음일때
-					count1 = 0; // 모음 0으로 초기화
-					count2++; // 자음++
-					if (i >= 1 && (now == s.charAt(i - 1))) { // 같은글자
-						three = false;
-					}
-				}
+                if (cnt1 == 3 || cnt2 == 3) {
+                    flag2 = false;
+                    break;
+                }
 
-				if (count1 == 3 || count2 == 3) { // 모음, 자음이 연속 3개 온다면
-					three = false;
-					break;
-				}
-			}
-			sb.append("<").append(s).append("> is ");
-			if (one && three) {
-				sb.append("acceptable.").append("\n");
-			} else {
-				sb.append("not acceptable.").append("\n");
-			}
-		}
-		bw.write(String.valueOf(sb));
-		bw.flush();
-	}
+                if (i > 0) {
+                    if (s.charAt(i) != 'e' && s.charAt(i) != 'o' && s.charAt(i - 1) == s.charAt(i)) {
+                        flag3 = false;
+                    }
+                }
+
+            }
+
+            if (flag1 && flag2 && flag3) {
+                sb.append("<").append(s).append(">").append(" is acceptable.\n");
+            } else {
+                sb.append("<").append(s).append(">").append(" is not acceptable.\n");
+            }
+        }
+
+        bw.write(sb + " ");
+        bw.flush();
+    }
 }
