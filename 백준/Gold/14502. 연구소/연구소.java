@@ -2,132 +2,111 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static int[] dx = {0, 0, 1, -1};
+    static int[] dy = {1, -1, 0, 0};
+    static int[][] map;
+    static int[] wall = new int[3];
+    static boolean[][] visited;
+    static int ret = 0;
 
-	static int[][] map;
-	static int N;
-	static int M;
-	static boolean[][] use;
-	static Pair[] arr;
-	static boolean[][] visited;
-	static int[] dx = {1, -1, 0, 0};
-	static int[] dy = {0, 0, 1, -1};
-	static int max;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        map = new int[N][M];
+        visited = new boolean[N][M];
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < M; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+                if (map[i][j] == 1) {
+                    visited[i][j] = true;
+                }
+            }
+        }
 
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
+        find(0, N, M);
 
-		map = new int[N][M];
+        bw.write(ret + "");
+        bw.flush();
+    }
 
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			for (int j = 0; j < M; j++) {
-				map[i][j] = Integer.parseInt(st.nextToken());
-			}
-		}
+    static void find(int k, int N, int M) {
+        if (k == 3) {
+            int[][] arr = new int[N][M];
+            for (int i = 0; i < N; i++) {
+                arr[i] = map[i].clone();
+            }
+            for (int i = 0; i < 3; i++) {
+                int x = wall[i] / M;
+                int y = wall[i] % M;
+                arr[x][y] = 1;
+            }
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < M; j++) {
+                    if (arr[i][j] == 2) {
+                        bfs(i, j, arr, N, M);
+                    }
+                }
+            }
+            int cnt = 0;
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < M; j++) {
+                    if (arr[i][j] == 0) {
+                        cnt++;
+                    }
+                }
+            }
+            ret = Math.max(ret, cnt);
+            return;
+        }
 
-		arr = new Pair[3];
-		use = new boolean[N][M];
-		find(0);
-		bw.write(String.valueOf(max));
-		bw.flush();
-	}
+        for (int i = 0; i < N * M; i++) {
+            int x = i / M;
+            int y = i % M;
+            if (!visited[x][y] && map[x][y] == 0) {
+                visited[x][y] = true;
+                wall[k] = i;
+                find(k + 1, N, M);
+                visited[x][y] = false;
+            }
+        }
+    }
 
-	static void find(int k) {
-		if (k == 3) {
-			visited = new boolean[N][M];
-			int[][] tmp = copyMap(map);
-			for (int i = 0; i < 3; i++) {
-				Pair get = arr[i];
-				tmp[get.x][get.y] = 1;
-			}
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < M; j++) {
-					if (tmp[i][j] == 2)
-						tmp = bfs(tmp, i, j);
-				}
-			}
-			max = Math.max(count(tmp), max);
-			return;
-		}
-		/*int startI = 0;
-		int startJ = 0;
-		if (k > 0) {
-			Pair get = arr[k - 1];
-			startI = get.x;
-			startJ = get.y;
-		}*/
+    static void bfs(int x, int y, int[][] arr, int N, int M) {
+        Queue<Pair> q = new ArrayDeque<>();
+        q.add(new Pair(x, y));
+        arr[x][y] = 3;
 
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < M; j++) {
-				if (map[i][j] == 0 && !use[i][j]) {
-					use[i][j] = true;
-					arr[k] = new Pair(i, j);
-					find(k + 1);
-					use[i][j] = false;
-				}
-			}
-		}
-	}
+        while (!q.isEmpty()) {
+            Pair get = q.poll();
 
-	static int[][] bfs(int[][] map, int startX, int startY) {
-		Queue<Pair> q = new LinkedList<>();
-		q.add(new Pair(startX, startY));
+            for (int i = 0; i < 4; i++) {
+                int X = get.x + dx[i];
+                int Y = get.y + dy[i];
 
-		while (!q.isEmpty()) {
-			Pair get = q.poll();
+                if (X < 0 || X > N - 1 || Y < 0 || Y > M - 1) {
+                    continue;
+                }
 
-			for (int i = 0; i < 4; i++) {
-				int x = get.x + dx[i];
-				int y = get.y + dy[i];
+                if (arr[X][Y] == 0) {
+                    arr[X][Y] = 3;
+                    q.add(new Pair(X, Y));
+                }
+            }
+        }
+    }
 
-				if (x < 0 || x > N - 1 || y < 0 || y > M - 1)
-					continue;
+    static class Pair {
+        int x;
+        int y;
 
-				if (map[x][y] == 0 && !visited[x][y]) {
-					map[x][y] = 2;
-					visited[x][y] = true;
-					q.add(new Pair(x, y));
-				}
-			}
-		}
-
-		return map;
-	}
-
-	static int count(int[][] map) {
-		int count = 0;
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < M; j++) {
-				if (map[i][j] == 0)
-					count++;
-			}
-		}
-
-		return count;
-	}
-
-	static int[][] copyMap(int[][] map) {
-		int[][] tmp = new int[N][M];
-
-		for (int i = 0; i < N; i++)
-			tmp[i] = map[i].clone();
-
-		return tmp;
-	}
-
-	static class Pair {
-		int x;
-		int y;
-
-		public Pair(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-	}
+        public Pair(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
 }
-
