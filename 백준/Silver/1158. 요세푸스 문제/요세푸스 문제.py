@@ -1,12 +1,9 @@
 N, K = map(int, input().split())
-l = list(i for i in range(1, N + 1))
-ret = "<" + str(K)
-now = K - 1
-del l[now]
+l = [i for i in range(1, N + 1)]
+ret = []
+now = 0
 while len(l) != 0:
     now += K - 1
     now %= len(l)
-    ret = ret + ", " + str(l[now])
-    del l[now]
-ret += ">"
-print(ret)
+    ret.append(str(l.pop(now)))
+print("<", ", ".join(ret)[:], ">", sep='')
