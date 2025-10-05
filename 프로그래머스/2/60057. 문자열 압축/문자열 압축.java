@@ -3,7 +3,6 @@ import java.util.*;
 class Solution {
     public int solution(String s) {
         int ret = s.length();
-        StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= (s.length() / 2); i++) { // S의 절반 길이가 최대 압축
             int tmp = s.length();
             String before = "";
