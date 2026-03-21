@@ -3,7 +3,7 @@ using namespace std;
 
 int main() {
   int n, tmp;
-  int arr[100001] = {0};
+  int arr[200001] = {0};
 
   cin >> n;
   for (int i = 0; i < 2 * n; i++) {
