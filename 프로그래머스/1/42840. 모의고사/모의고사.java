@@ -8,22 +8,23 @@ class Solution {
             {3, 3, 1, 1, 2, 2, 4, 4, 5, 5}
         };
         
-        int[] sum = new int[3];
-        int max = 0;
+        int[] sum = {0, 0, 0};
+    
         
         for (int i = 0; i < answers.length; i++) {
-            for (int j = 0; j < pattern.length; j++) {
+            for (int j = 0; j < 3; j++) {
                 if (answers[i] == pattern[j][i % pattern[j].length]) {
                     sum[j]++;
-                    max = Math.max(max, sum[j]);
                 }
             }
         }
         
+        int maxScore = Arrays.stream(sum).max().getAsInt();
+        
         ArrayList<Integer> list = new ArrayList<>();
         
         for (int i = 0; i < 3; i++) {
-            if (sum[i] == max) {
+            if (maxScore == sum[i]) {
                 list.add(i + 1);
             }
         }
