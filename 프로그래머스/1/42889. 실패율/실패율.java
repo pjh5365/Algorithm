@@ -1,26 +1,37 @@
 import java.util.*;
 
 class Solution {
-    /**
-    * 
-    */
-    public static int[] solution(int N, int[] stages) {
-		int[] cnt = new int[N + 2]; // 스테이지별 도전자 수
+    public int[] solution(int N, int[] stages) {
+        HashMap<Integer, Double>map = new HashMap<>();
+        int[] cnt = new int[N + 1]; // 전체 클리어한 플레이어 수 포함
+        
         for (int i : stages) {
-            cnt[i]++;
+            cnt[i - 1]++; // 스테이지에 도달했으나 아직 클리어하지 못한 플레이어의 수
         }
-        HashMap<Integer, Double> fails = new HashMap<>();
-        double total = stages.length; // 모든 플레이어가 1 스테이지에 도달
         
-        for (int i = 1; i <= N; i++) {
-            if (cnt[i] == 0) { // 도전자가 0이라면 실패율 0
-                fails.put(i, 0.0);
-            } else {
-                fails.put(i, cnt[i] / total); // 도전자 / 도달한 플레이어 수
-                total -= cnt[i]; // 다음 스테이지 실패율을 구하기 위해 현재 스테이지 인원 빼기
+        int sum = 0;
+        int pSize = stages.length; // 전체 사용자 수
+        
+        Arrays.sort(stages); // 스테이지 정렬
+        for (int i = 0; i < N; i++) {
+            if (cnt[i] == 0) {
+                map.put(i + 1, 0.0);
+                continue;
             }
+            double tmp = (double) cnt[i] / (pSize - sum);
+            map.put(i + 1, tmp);
+            sum += cnt[i];
         }
+
+        List<Integer> keySet = new ArrayList<>(map.keySet());
+        keySet.sort((o1, o2) -> map.get(o2).compareTo(map.get(o1)));
         
-        return fails.entrySet().stream().sorted((o1, o2) -> Double.compare(o2.getValue(), o1.getValue())).mapToInt(HashMap.Entry::getKey).toArray();
+        
+        return keySet.stream().mapToInt(Integer::intValue).toArray();
 	}
 }
+/**
+* 1. 스테이지 정렬
+* 2. 오름차순 정렬이므로 해당 스테이지의 실패율 = cnt[i]  / pSize - 현재 인덱스 (최초 숫자가 바뀌는 인덱스)
+* 3. 정렬하여 반환..?
+*/
