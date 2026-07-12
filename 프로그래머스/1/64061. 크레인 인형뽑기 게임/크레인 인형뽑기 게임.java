@@ -3,35 +3,24 @@ import java.util.*;
 class Solution {
     public int solution(int[][] board, int[] moves) {
         Stack<Integer> s = new Stack<>();
-        
-        List<Stack<Integer>> sList = new ArrayList<>();
-        
-        for (int i = 0; i < board.length; i++) {
-            sList.add(new Stack<>());
-        }
-                
-        for (int i = 0; i < board.length; i++) {
-            for (int j = board.length - 1; j >= 0; j--) {
-                if (board[j][i] != 0) {
-                    sList.get(i).push(board[j][i]);
-                }
-            }
-        }
-        
+        int n = board.length;
         int ret = 0;
-        for (int i : moves) {
-            Stack<Integer> now = sList.get(i - 1);
-            if (!now.isEmpty()) {
-                int get = now.pop();
-                if (!s.isEmpty()) {
-                    if (s.peek() == get) {
-                        s.pop();
-                        ret += 2;
+        for (int now : moves) {
+            for (int i = 0; i < n; i++) {
+                int tmp = board[i][now - 1];
+                if (tmp != 0) {
+                    if (!s.isEmpty()) {
+                        if (s.peek() == tmp) {
+                            s.pop();
+                            ret += 2;
+                        } else {
+                            s.push(tmp);
+                        }
                     } else {
-                        s.push(get);
+                        s.push(tmp);
                     }
-                } else {
-                    s.push(get);
+                    board[i][now - 1] = 0;
+                    break;
                 }
             }
         }
