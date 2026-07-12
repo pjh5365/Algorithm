@@ -1,35 +1,29 @@
 import java.util.*;
 
 class Solution {
-    public int[] solution(int[] progresses, int[] speeds) {
-        Stack<Integer> s = new Stack<>();
-        ArrayList<Integer> list = new ArrayList<>();
+    public int[] solution(int[] p, int[] speeds) {
+        Queue<Integer> q1 = new ArrayDeque<>();
+        Queue<Integer> q2 = new ArrayDeque<>();
         
-        int len = progresses.length;
+        for (int i = 0; i < p.length; i++) {
+            q1.add(p[i]);
+            q2.add(speeds[i]);
+        }
         
-        for (int i = len - 1; i >= 0; i--) {
-            s.push(i);
-        }
-        while (!s.isEmpty()) {
-            for (int i = 0; i < len; i++) {
-                progresses[i] += speeds[i];
+        ArrayList<Integer> ret = new ArrayList<>();
+        int cnt = 0;
+        
+        for (int i = 1; i <= 100; i++) {
+            cnt = 0;
+            while (!q1.isEmpty() && q1.peek() + q2.peek() * i >= 100) {
+                cnt++;
+                q1.poll();
+                q2.poll();
             }
-            int ret = 0;
-            while (progresses[s.peek()] >= 100) {
-                s.pop();
-                ret++;
-                if (s.isEmpty()) {
-                    break;
-                }
-            }
-            if (ret > 0) {
-                list.add(ret);
+            if (cnt != 0) {
+                ret.add(cnt);
             }
         }
-        int[] arr = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            arr[i] = list.get(i);
-        }
-        return arr;
+        return ret.stream().mapToInt(Integer::intValue).toArray();
     }
 }
