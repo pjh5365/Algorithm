@@ -1,76 +1,32 @@
 import java.util.*;
 
 class Solution {
-    public int[] solution(String[] genres, int[] plays) {
-        
-        HashMap<String, Integer> map = new HashMap<>();
-        HashMap<String, List<Pair>> listMap = new HashMap<>();
+    public int[] solution(String[] g, int[] p) {
+        HashMap<String, Integer> pm = new HashMap<>();
+        HashMap<String, ArrayList<int[]>> gm = new HashMap<>();
 
-        List<Integer> ret = new ArrayList<>();
+        for (int i = 0; i < g.length; i++) {
+            String genre = g[i];
+            int play = p[i];
 
-        for (int i = 0; i < genres.length; i++) {
-            String s = genres[i];
-            int now = plays[i];
-
-            Integer get = map.get(s);
-            List<Pair> list = listMap.get(s);
-            if (get == null) {
-                map.put(s, now);
-            } else {
-                map.put(s, now + get);
+            if (!gm.containsKey(genre)) {
+                gm.put(genre, new ArrayList<>());
+                pm.put(genre, 0);
             }
-
-            if (list == null) {
-                list = new ArrayList<>();
-                listMap.put(s, list);
-            }
-            list.add(new Pair(i, now, s));
+            gm.get(genre).add(new int[] {i, play});
+            pm.put(genre, pm.get(genre) + play);
         }
 
-        List<String> keySet = new ArrayList<>(map.keySet());
-        keySet.sort((o1, o2) -> map.get(o2).compareTo(map.get(o1)));
-        for (String s : keySet) {
-            List<Pair> list = listMap.get(s);
-            Collections.sort(list);
+        ArrayList<Integer> ret = new ArrayList<>();
 
-            for (int i = 0; i < Math.min(2, list.size()); i++) {
-                ret.add(list.get(i).idx);
-            }
-        }
-        int[] answer = new int[ret.size()];
-        for (int i = 0; i < ret.size(); i++) {
-            answer[i] = ret.get(i);
-        }
-        return answer;
-    }
-}
-
-class Pair implements Comparable<Pair> {
-    int idx;
-    int cnt;
-    String g;
-
-    public Pair(int idx, int cnt, String g) {
-        this.idx = idx;
-        this.cnt = cnt;
-        this.g = g;
-    }
-
-    @Override
-    public int compareTo(Pair o) {
-
-        if (this.cnt != o.cnt) {
-            if (this.cnt > o.cnt) {
-                return -1;
-            } else {
-                return 1;
-            }
-        } else {
-            if (this.idx > o.idx) {
-                return 1;
-            } else {
-                return -1;
-            }
-        }
+        pm.entrySet()
+                .stream()
+                .sorted((o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()))
+                .forEach(e -> gm.get(e.getKey())
+                        .stream()
+                        .sorted((o1, o2) -> Integer.compare(o2[1], o1[1]))
+                        .limit(2)
+                        .forEach(s -> ret.add(s[0])));
+        return ret.stream().mapToInt(Integer::intValue).toArray();
     }
 }
